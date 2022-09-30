@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>HORIZONTAL BAR CHART</title>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <style>
+        body {
+            font-family: "Verdana", sans-serif;
+        }
+        
+        .bar {
+            fill:steelblue;
+        }
+        
+        .axis {
+            font-size: 10px;
+        }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            display: none;
+        }
+        
+        .label {
+            font-size: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="graphic"></div>
+
+    <script>
+        var data = [{
+                "otu_id": "OTU 1977",
+                "sample_value": 40,
+        },
+            {
+                "otu_id": "OTU 2318",
+                "sample_value": 40,
+        },
+            {
+                "otu_id": "OTU 189",
+                "sample_value": 47,
+        },
+            {
+                "otu_id": "OTU 352",
+                "sample_value": 50,
+        },
+            {
+                "otu_id": "OTU 1189",
+                "sample_value": 51,
+        },
+            {
+                "otu_id": "OTU 41",
+                "sample_value": 71,
+        },
+            {
+                "otu_id": "OTU 2264",
+                "sample_value": 78,
+        },
+            {
+                "otu_id": "OTU 482",
+                "sample_value": 113,
+
+        },
+            {
+                "otu_id": "OTU 2859",
+                "sample_value": 126,
+
+        },
+            {
+                "otu_id": "OTU 1167",
+                "sample_value": 163,
+        }];
+
+        //Defining svg 
+        var margin = {
+            top: 09,
+            right: 18,
+            bottom: 08,
+            left: 70
+        };
+
+        var width = 850 - margin.left - margin.right,
+            height = 530 - margin.top - margin.bottom;
+
+        var svg = d3.select("#graphic").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var x = d3.scale.linear()
+            .range([0, width])
+            .domain([0, d3.max(data, function (d) {
+                return d.sample_value;
+            })]);
+
+        var y = d3.scale.ordinal()
+            .rangeRoundBands([height, 0], .1)
+            .domain(data.map(function (d) {
+                return d.otu_id;
+            }));
+
+        //see bar names in axis
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            //no tick marks
+            .tickSize(0)
+            .orient("left");
+
+        var gy = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+
+        var bars = svg.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("g")
+
+        //append rects
+        bars.append("rect")
+            .attr("class", "bar")
+            .attr("y", function (d) {
+                return y(d.otu_id);
+            })
+            .attr("height", y.rangeBand())
+            .attr("x", 0)
+            .attr("width", function (d) {
+                return x(d.sample_value);
+            });
+
+    </script>
+
+</body>
+
+</html>
